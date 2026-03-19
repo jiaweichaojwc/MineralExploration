@@ -105,7 +105,7 @@ struct MEInitStateDist
     rng::AbstractRNG
 end
 
-function POMDPs.initialstate_distribution(m::MineralExplorationPOMDP)
+function POMDPs.initialstate(m::MineralExplorationPOMDP)
     gp_dist = m.geodist_type(m)
     MEInitStateDist(gp_dist, m.mainbody_weight, m.mainbody_gen,
                     m.massive_threshold, m.rng)

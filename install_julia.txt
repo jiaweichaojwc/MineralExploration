@@ -1,13 +1,19 @@
 # Install Julia (Windows, using juliaup)
 winget install julia -s msstore
 
-# Install Julia 1.10 (current LTS) or any Julia >= 1.6
+# Install Julia 1.10 (current LTS) or any Julia >= 1.10
 juliaup add 1.10
 juliaup default 1.10
 
 # To install the project dependencies, from the project root directory run:
 # julia --project=. -e "using Pkg; Pkg.instantiate()"
 
-# If you prefer to use a different Julia version (>= 1.6):
+# If you prefer to use a different Julia version (>= 1.10):
 # juliaup add <version>
 # juliaup default <version>
+
+# Note: Julia 1.10 or higher is required. Earlier versions are not supported
+# because some dependencies require Julia 1.10+.
+
+# For interactive PlotlyJS plots, after instantiate, run once:
+# julia --project=. -e "using Blink; Blink.AtomShell.install()"
