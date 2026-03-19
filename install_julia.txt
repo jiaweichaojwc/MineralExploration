@@ -1,3 +1,13 @@
+# Install Julia (Windows, using juliaup)
 winget install julia -s msstore
-juliaup add 1.6.7
-juliaup default 1.6.7
+
+# Install Julia 1.10 (current LTS) or any Julia >= 1.6
+juliaup add 1.10
+juliaup default 1.10
+
+# To install the project dependencies, from the project root directory run:
+# julia --project=. -e "using Pkg; Pkg.instantiate()"
+
+# If you prefer to use a different Julia version (>= 1.6):
+# juliaup add <version>
+# juliaup default <version>
