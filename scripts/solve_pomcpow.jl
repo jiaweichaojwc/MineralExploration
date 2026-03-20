@@ -4,12 +4,16 @@ using DelimitedFiles
 using POMDPs
 using POMDPSimulators
 using POMCPOW
+# 强制禁用 GR 后端，使用纯浏览器渲染的 Plotly
+ENV["PLOTS_DEFAULT_BACKEND"] = "Plotly"
 using Plots
+plotly()
+
 using ParticleFilters
 using Statistics
 
-using ProfileView
-using D3Trees
+# using ProfileView
+# using D3Trees
 
 using MineralExploration
 
@@ -26,7 +30,7 @@ m = MineralExplorationPOMDP(max_bores=MAX_BORES, delta=GRID_SPACING+1, grid_spac
                             # , geodist_type=GSLIBDistribution)
 initialize_data!(m, N_INITIAL)
 
-ds0 = POMDPs.initialstate_distribution(m)
+ds0 = POMDPs.initialstate(m)
 s0 = rand(ds0)
 
 up = MEBeliefUpdater(m, 1000, 2.0)

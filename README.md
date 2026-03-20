@@ -30,7 +30,7 @@ m = MineralExplorationPOMDP(max_bores=MAX_BORES, delta=GRID_SPACING+1, grid_spac
                             mainbody_gen=mainbody, max_movement=MAX_MOVEMENT)
                             # , geodist_type=GSLIBDistribution)
 initialize_data!(m, N_INITIAL)
-ds0 = POMDPs.initialstate_distribution(m)
+ds0 = POMDPs.initialstate(m)
 
 # 2) Sample initial state
 s0 = rand(ds0)
