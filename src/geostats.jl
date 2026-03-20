@@ -105,7 +105,10 @@ end
 Solve the simulation `problem` with the simulation `solver`,
 optionally using multiple processes `procs`.
 ### Notes
-Default implementation calls `solvesingle` in parallel.
+When only one process is provided (the default), `solvesingle` is called
+serially with `map` to avoid `DimensionMismatch` errors from Distributed
+on Windows / Julia 1.6.  `pmap` is only used when multiple worker processes
+are explicitly supplied.
 """
 function solve_nopreproc(problem::SimulationProblem, solver::LUGS, preproc::Dict; procs=[GeoStats.GeoStatsBase.myid()])
     # sanity checks
@@ -126,9 +129,16 @@ function solve_nopreproc(problem::SimulationProblem, solver::LUGS, preproc::Dict
     results = []
 
     for covars in allcovars
-        # simulate covariables
-        reals = GeoStats.GeoStatsBase.pmap(pool, 1:nreals(problem)) do _
-            solvesingle(problem, covars, solver, preproc)
+        # simulate covariables — use serial map when running on a single process
+        # to avoid DimensionMismatch errors from Distributed on Windows/Julia 1.6
+        reals = if length(procs) <= 1
+            map(1:nreals(problem)) do _
+                solvesingle(problem, covars, solver, preproc)
+            end
+        else
+            GeoStats.GeoStatsBase.pmap(pool, 1:nreals(problem)) do _
+                solvesingle(problem, covars, solver, preproc)
+            end
         end
 
         # rearrange realizations
