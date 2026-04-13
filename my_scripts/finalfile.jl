@@ -1,3 +1,21 @@
+#=
+需要的输入是个文件夹，文件夹的里包含多个csv文件，每个csv文件包含数据如下格式
+
+ID	X	Y	Average_Grade
+钻井 1,B20,3100-3060M	509850.934	4675987.059	20
+钻井 5,B20,3170-3120M	509863.036	4676189.237	20
+钻井 8,B25,3360-3290M	509744.967	4676191.294	25
+钻井 9,B18,3500-3440M	509802.622	4676291.345	18
+钻井 10,B28,3580-3510M	509625.248	4676192.241	28
+钻井 11,B15,3660-3600M	509680.428	4676292.286	15
+钻井 12,B18,3620-3550M	509553.514	4676121.053	18
+钻井 14,B15,3530-3490M	509715.993	4676246.793	15
+钻井 15,B20,3690-3600M	509531.96	4676185.449	20
+钻井 20,B15,3700-3670M	510814.974	4676740.471	15
+
+其中X,Y是国家2000坐标系的坐标，Average_Grade是平均品位。每个csv文件的格式相同，但数据不同。需要对每个csv文件进行处理，输出一个txt文件和两张图（png和html）。txt文件包含推荐的打孔坐标，png和html图展示预测的品位分布、预测不确定性分布、AI推荐靶区分布等信息。所有结果保存在一个以csv文件名命名的独立文件夹中，避免覆盖。
+=#
+
 using POMDPs
 using MineralExploration
 using POMCPOW
@@ -38,14 +56,14 @@ end
 # ==========================================
 # 🌟 只需修改这里：文件夹路径 🌟
 # ==========================================
-input_folder = raw"C:\\Users\\Deep-Lei\\Desktop\\转化后格式"  # 存放CSV的文件夹
+input_folder = raw"C:\Users\Deep-Lei\Desktop\data\内蒙古锡林郭勒盟油气-3.023km2【油气】（费）（任务，下载）\智能布钻\转化后格式" # 存放CSV的文件夹
 output_base_dir = raw"C:\\Users\\Deep-Lei\\Desktop"            # 结果输出根目录
 
 # 2. 核心计算参数
 cell_size = 10                # 网格分辨率 (米/格)
 padding = 50.0                # 矿区边界外扩缓冲距离 (米)
-min_grid_dist = 3.0           # 批量推荐打孔点之间的最小网格距离限制
-max_target_num = 200          # 单文件最多输出的备选靶区数量
+min_grid_dist = 1           # 批量推荐打孔点之间的最小网格距离限制
+max_target_num = 800          # 单文件最多输出的备选靶区数量
 
 # 3. 盲测(交叉验证)参数
 keep_ratio = 1                # 1.0 表示全量数据用于AI计算
@@ -116,7 +134,7 @@ for csv_file_path in csv_files
     span_N = max_N - min_N
 
     # 【防内存溢出机制】最大允许 60x60 网格
-    max_grid_dim = 60 
+    max_grid_dim = 150
     current_cell_size = cell_size 
     if (span_E / current_cell_size) > max_grid_dim || (span_N / current_cell_size) > max_grid_dim
         safe_cell_size = max(span_E / max_grid_dim, span_N / max_grid_dim)
